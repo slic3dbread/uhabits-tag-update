@@ -41,7 +41,7 @@
         android:allowBackup="true"
         android:backupAgent=".HabitsBackupAgent"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/main_activity_title"
+        android:label="Loop"
         android:supportsRtl="true"
         android:theme="@style/AppBaseTheme">
 
@@ -51,7 +51,7 @@
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/main_activity_title"
+            android:label="Loop"
             android:launchMode="singleTop">
             <intent-filter android:label="Loop">
                 <action android:name="android.intent.action.MAIN"/>
