@@ -20,6 +20,7 @@
 package org.isoron.uhabits.activities.habits.list.views;
 
 import android.content.*;
+import android.graphics.*;
 import android.support.annotation.*;
 import android.util.*;
 import android.view.*;
@@ -31,7 +32,7 @@ import org.isoron.uhabits.utils.*;
 
 import java.util.*;
 
-public class HeaderView extends LinearLayout implements Preferences.Listener
+public class HeaderView extends LinearLayout
 {
     private final Context context;
 
@@ -51,17 +52,11 @@ public class HeaderView extends LinearLayout implements Preferences.Listener
         }
 
         Context appContext = context.getApplicationContext();
-        if (appContext instanceof HabitsApplication)
+        if(appContext instanceof HabitsApplication)
         {
             HabitsApplication app = (HabitsApplication) appContext;
             prefs = app.getComponent().getPreferences();
         }
-    }
-
-    @Override
-    public void onCheckmarkOrderChanged()
-    {
-        createButtons();
     }
 
     public void setButtonCount(int buttonCount)
@@ -71,27 +66,9 @@ public class HeaderView extends LinearLayout implements Preferences.Listener
     }
 
     @Override
-    protected void onAttachedToWindow()
+    protected void onDraw(Canvas canvas)
     {
-        super.onAttachedToWindow();
-        if (prefs != null) prefs.addListener(this);
-    }
-
-    @Override
-    protected void onDetachedFromWindow()
-    {
-        if (prefs != null) prefs.removeListener(this);
-        super.onDetachedFromWindow();
-    }
-
-    private void createButtons()
-    {
-        removeAllViews();
         GregorianCalendar day = DateUtils.getStartOfTodayCalendar();
-
-        for (int i = 0; i < buttonCount; i++)
-            addView(
-                inflate(context, R.layout.list_habits_header_checkmark, null));
 
         for (int i = 0; i < getChildCount(); i++)
         {
@@ -103,11 +80,22 @@ public class HeaderView extends LinearLayout implements Preferences.Listener
             label.setText(DateUtils.formatHeaderDate(day));
             day.add(GregorianCalendar.DAY_OF_MONTH, -1);
         }
+
+        super.onDraw(canvas);
+    }
+
+    private void createButtons()
+    {
+        int layout = R.layout.list_habits_header_checkmark;
+
+        removeAllViews();
+        for (int i = 0; i < buttonCount; i++)
+            addView(inflate(context, layout, null));
     }
 
     private boolean shouldReverseCheckmarks()
     {
-        if (prefs == null) return false;
+        if(prefs == null) return false;
         return prefs.shouldReverseCheckmarks();
     }
 }

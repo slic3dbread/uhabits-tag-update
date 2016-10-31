@@ -159,7 +159,11 @@ public class ListHabitsController
     public void onRepairDB()
     {
         taskRunner.execute(() -> {
-            habitList.repair();
+            for(Habit h : habitList) {
+                h.getCheckmarks().invalidateNewerThan(0);
+                h.getStreaks().invalidateNewerThan(0);
+                h.getScores().invalidateNewerThan(0);
+            }
             screen.showMessage(R.string.database_repaired);
         });
     }

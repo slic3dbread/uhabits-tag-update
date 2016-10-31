@@ -58,8 +58,7 @@ public abstract class BaseWidget
 
         prefs = app.getComponent().getWidgetPreferences();
         pendingIntentFactory = app.getComponent().getPendingIntentFactory();
-        dimensions = new WidgetDimensions(getDefaultWidth(), getDefaultHeight(),
-            getDefaultWidth(), getDefaultHeight());
+        dimensions = new WidgetDimensions(0, 0, 0, 0);
     }
 
     public void delete()
@@ -145,18 +144,12 @@ public abstract class BaseWidget
         return new int[]{ w, h, w, h };
     }
 
-    @NonNull
     private Bitmap getBitmapFromView(View view)
     {
         view.invalidate();
         view.setDrawingCacheEnabled(true);
         view.buildDrawingCache(true);
-        Bitmap drawingCache = view.getDrawingCache();
-
-        if(drawingCache == null)
-            throw new IllegalStateException("bitmap is null");
-
-        return drawingCache;
+        return view.getDrawingCache();
     }
 
     @NonNull

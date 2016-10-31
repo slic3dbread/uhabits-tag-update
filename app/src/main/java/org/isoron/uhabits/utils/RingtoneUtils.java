@@ -29,8 +29,6 @@ import android.support.v4.app.*;
 
 import org.isoron.uhabits.*;
 
-import static android.media.RingtoneManager.*;
-
 public abstract class RingtoneUtils
 {
     @Nullable
@@ -44,7 +42,8 @@ public abstract class RingtoneUtils
 
             if (ringtoneUri != null)
             {
-                Ringtone ringtone = getRingtone(context, ringtoneUri);
+                Ringtone ringtone =
+                    RingtoneManager.getRingtone(context, ringtoneUri);
                 if (ringtone != null)
                 {
                     ringtoneName = ringtone.getTitle(context);
@@ -81,7 +80,8 @@ public abstract class RingtoneUtils
     {
         if (data == null) return;
 
-        Uri ringtoneUri = data.getParcelableExtra(EXTRA_RINGTONE_PICKED_URI);
+        Uri ringtoneUri =
+            data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
 
         if (ringtoneUri != null)
         {
@@ -104,15 +104,19 @@ public abstract class RingtoneUtils
     public static void startRingtonePickerActivity(Fragment fragment,
                                                    int requestCode)
     {
-        Uri existingRingtoneUri = getRingtoneUri(fragment.getContext());
+        Uri existingRingtoneUri =
+            getRingtoneUri(fragment.getContext());
         Uri defaultRingtoneUri = Settings.System.DEFAULT_NOTIFICATION_URI;
 
-        Intent intent = new Intent(ACTION_RINGTONE_PICKER);
-        intent.putExtra(EXTRA_RINGTONE_TYPE, TYPE_NOTIFICATION);
-        intent.putExtra(EXTRA_RINGTONE_SHOW_DEFAULT, true);
-        intent.putExtra(EXTRA_RINGTONE_SHOW_SILENT, true);
-        intent.putExtra(EXTRA_RINGTONE_DEFAULT_URI, defaultRingtoneUri);
-        intent.putExtra(EXTRA_RINGTONE_EXISTING_URI, existingRingtoneUri);
+        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE,
+            RingtoneManager.TYPE_NOTIFICATION);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI,
+            defaultRingtoneUri);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI,
+            existingRingtoneUri);
         fragment.startActivityForResult(intent, requestCode);
     }
 }

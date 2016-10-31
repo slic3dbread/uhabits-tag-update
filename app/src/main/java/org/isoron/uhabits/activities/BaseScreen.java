@@ -26,7 +26,6 @@ import android.net.*;
 import android.os.*;
 import android.support.annotation.*;
 import android.support.design.widget.*;
-import android.support.v4.content.res.*;
 import android.support.v7.app.*;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
@@ -38,9 +37,6 @@ import org.isoron.uhabits.utils.*;
 
 import java.io.*;
 
-import static android.os.Build.VERSION.*;
-import static android.os.Build.VERSION_CODES.*;
-
 /**
  * Base class for all screens in the application.
  * <p>
@@ -48,7 +44,7 @@ import static android.os.Build.VERSION_CODES.*;
  * attached to the main window. They are also responsible for showing other
  * screens and for receiving their results.
  */
-public class BaseScreen
+public abstract class BaseScreen
 {
     protected BaseActivity activity;
 
@@ -80,11 +76,10 @@ public class BaseScreen
 
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-
         ColorDrawable drawable = new ColorDrawable(color);
         actionBar.setBackgroundDrawable(drawable);
 
-        if (SDK_INT >= LOLLIPOP)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
             int darkerColor = ColorUtils.mixColors(color, Color.BLACK, 0.75f);
             activity.getWindow().setStatusBarColor(darkerColor);
@@ -94,23 +89,8 @@ public class BaseScreen
             View view = activity.findViewById(R.id.toolbarShadow);
             if (view != null) view.setVisibility(View.GONE);
 
-            view = activity.findViewById(R.id.headerShadow);
-            if (view != null) view.setVisibility(View.GONE);
-        }
-    }
-
-    @Deprecated
-    public static int getDefaultActionBarColor(Context context)
-    {
-        if (SDK_INT < LOLLIPOP)
-        {
-            return ResourcesCompat.getColor(context.getResources(),
-                R.color.grey_900, context.getTheme());
-        }
-        else
-        {
-            StyledResources res = new StyledResources(context);
-            return res.getColor(R.attr.colorPrimary);
+//            view = activity.findViewById(R.id.headerShadow);
+//            if (view != null) view.setVisibility(View.GONE);
         }
     }
 
@@ -138,6 +118,7 @@ public class BaseScreen
             int color = rootView.getToolbarColor();
             setActionBarColor(actionBar, color);
             setStatusBarColor(color);
+            setupToolbarElevation(toolbar);
         });
     }
 
@@ -167,20 +148,6 @@ public class BaseScreen
     public void setMenu(@Nullable BaseMenu menu)
     {
         activity.setBaseMenu(menu);
-    }
-
-    /**
-     * Sets the root view for this screen.
-     *
-     * @param rootView the root view for this screen.
-     */
-    public void setRootView(@Nullable BaseRootView rootView)
-    {
-        this.rootView = rootView;
-        activity.setContentView(rootView);
-        if (rootView == null) return;
-
-        invalidateToolbar();
     }
 
     /**
@@ -249,6 +216,20 @@ public class BaseScreen
         activity.startSupportActionMode(new ActionModeWrapper());
     }
 
+    /**
+     * Sets the root view for this screen.
+     *
+     * @param rootView the root view for this screen.
+     */
+    protected void setRootView(@Nullable BaseRootView rootView)
+    {
+        this.rootView = rootView;
+        activity.setContentView(rootView);
+        if (rootView == null) return;
+
+        invalidateToolbar();
+    }
+
     private void setActionBarColor(@NonNull ActionBar actionBar, int color)
     {
         ColorDrawable drawable = new ColorDrawable(color);
@@ -257,10 +238,23 @@ public class BaseScreen
 
     private void setStatusBarColor(int baseColor)
     {
-        if (SDK_INT < LOLLIPOP) return;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
 
         int darkerColor = ColorUtils.mixColors(baseColor, Color.BLACK, 0.75f);
         activity.getWindow().setStatusBarColor(darkerColor);
+    }
+
+    private void setupToolbarElevation(Toolbar toolbar)
+    {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
+
+        toolbar.setElevation(InterfaceUtils.dpToPixels(activity, 2));
+
+        View view = activity.findViewById(R.id.toolbarShadow);
+        if (view != null) view.setVisibility(View.GONE);
+
+//        view = activity.findViewById(R.id.headerShadow);
+//        if (view != null) view.setVisibility(View.GONE);
     }
 
     private class ActionModeWrapper implements ActionMode.Callback

@@ -21,7 +21,6 @@ package org.isoron.uhabits.activities;
 
 import android.content.*;
 import android.support.annotation.*;
-import android.support.v4.content.res.*;
 import android.support.v7.widget.Toolbar;
 import android.view.*;
 import android.widget.*;
@@ -68,8 +67,9 @@ public abstract class BaseRootView extends FrameLayout
     {
         if (SDK_INT < LOLLIPOP && !themeSwitcher.isNightMode())
         {
-            return ResourcesCompat.getColor(context.getResources(),
-                R.color.grey_900, context.getTheme());
+            return context
+                .getResources()
+                .getColor(R.color.grey_900, context.getTheme());
         }
 
         StyledResources res = new StyledResources(context);
@@ -81,12 +81,8 @@ public abstract class BaseRootView extends FrameLayout
         if (SDK_INT >= LOLLIPOP)
         {
             getToolbar().setElevation(InterfaceUtils.dpToPixels(context, 2));
-
             View view = findViewById(R.id.toolbarShadow);
-            if (view != null) view.setVisibility(GONE);
-
-            view = findViewById(R.id.headerShadow);
-            if(view != null) view.setVisibility(GONE);
+            if (view != null) view.setVisibility(View.GONE);
         }
     }
 }

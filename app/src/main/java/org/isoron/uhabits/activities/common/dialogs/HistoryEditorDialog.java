@@ -163,9 +163,6 @@ public class HistoryEditorDialog extends AppCompatDialogFragment
         @Override
         public void onPostExecute()
         {
-            if (getContext() == null || habit == null || historyChart == null)
-                return;
-
             int color = ColorUtils.getColor(getContext(), habit.getColor());
             historyChart.setColor(color);
             historyChart.setCheckmarks(checkmarks);
