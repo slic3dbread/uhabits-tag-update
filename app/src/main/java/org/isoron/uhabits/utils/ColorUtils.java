@@ -38,7 +38,10 @@ public abstract class ColorUtils
         "#8E24AA", //  9 purple
         "#D81B60", // 10 pink
         "#303030", // 11 dark grey
-        "#aaaaaa"  // 12 light grey
+        "#aaaaaa", // 12 light grey
+        "#FF00FF", // 13 hot pink
+        "#00FF00", // 14 lime green
+        "#E6E600"  // 15 yellow
     };
 
     public static int colorToPaletteIndex(Context context, int color)

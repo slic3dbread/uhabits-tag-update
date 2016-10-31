@@ -30,6 +30,9 @@
         <item>@color/pink_600</item>
         <item>@color/grey_800</item>
         <item>@color/grey_500</item>
+        <item>@color/hot_pink</item>
+        <item>@color/lime_green</item>
+        <item>@color/yellow</item>
     </array>
 
     <array name="darkPalette">
@@ -46,6 +49,9 @@
         <item>@color/pink_200</item>
         <item>@color/grey_100</item>
         <item>@color/grey_500</item>
+        <item>@color/light_hot_pink</item>
+        <item>@color/light_lime_green</item>
+        <item>@color/light_yellow</item>
     </array>
 
     <array name="transparentWidgetPalette">
@@ -90,6 +96,14 @@
     <color name="light_gray">#404040</color>
     <color name="dark_gray">#363636</color>
     <color name="line_dark">#808080</color>
+
+    <!-- Added additional colors and accounts for both colour schemes-->
+    <color name="hot_pink">#FF00FF</color>
+    <color name="light_hot_pink">#FF99FF</color>
+    <color name="lime_green">#00FF00</color>
+    <color name="light_lime_green">#99FF99</color>
+    <color name="yellow">#E6E600</color>
+    <color name="light_yellow">#FFFF66</color>
 
     <!-- Material design color palette -->
     <color name="red_50">#FFEBEE</color>
