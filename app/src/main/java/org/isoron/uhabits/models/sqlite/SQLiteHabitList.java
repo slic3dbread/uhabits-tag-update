@@ -210,10 +210,7 @@ public class SQLiteHabitList extends HabitList
 
         fromRecord.position = toPos;
         fromRecord.save();
-
         update(from);
-        rebuildOrder();
-
         getObservable().notifyListeners();
     }
 
@@ -284,5 +281,12 @@ public class SQLiteHabitList extends HabitList
         appendWhere(query);
         appendOrderBy(query);
         return query.toString();
+    }
+
+    @Override
+    public void repair()
+    {
+        super.repair();
+        rebuildOrder();
     }
 }

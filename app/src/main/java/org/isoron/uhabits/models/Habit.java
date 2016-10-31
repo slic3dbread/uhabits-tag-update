@@ -23,6 +23,7 @@ import android.net.*;
 import android.support.annotation.*;
 
 import org.apache.commons.lang3.builder.*;
+import org.isoron.uhabits.activities.habits.edit.Tag;
 
 import java.util.*;
 
@@ -71,6 +72,8 @@ public class Habit
 
     private ModelObservable observable = new ModelObservable();
 
+    private Tag tag;
+
     /**
      * Constructs a habit with default attributes.
      * <p>
@@ -88,6 +91,7 @@ public class Habit
         streaks = factory.buildStreakList(this);
         scores = factory.buildScoreList(this);
         repetitions = factory.buildRepetitionList(this);
+        tag = null;
     }
 
     /**
@@ -107,6 +111,7 @@ public class Habit
     public void copyFrom(@NonNull Habit model)
     {
         this.name = model.getName();
+        this.tag = model.getTag();
         this.description = model.getDescription();
         this.color = model.getColor();
         this.archived = model.isArchived();
@@ -132,6 +137,18 @@ public class Habit
      * this color into an android.graphics.Color, use ColorHelper.getColor(context,
      * habit.color).
      */
+
+
+//  Tag functions
+    public void setTag(Tag newTag){
+        this.tag = newTag;
+        if (newTag.getColor() != 5){
+            this.setColor(newTag.getColor());
+        }
+    }
+
+    public Tag getTag(){return this.tag;}
+
     @NonNull
     public Integer getColor()
     {
@@ -231,6 +248,7 @@ public class Habit
     {
         return streaks;
     }
+
 
     /**
      * Returns the public URI that identifies this habit

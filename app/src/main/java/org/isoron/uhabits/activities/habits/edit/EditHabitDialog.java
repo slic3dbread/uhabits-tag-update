@@ -19,6 +19,8 @@
 
 package org.isoron.uhabits.activities.habits.edit;
 
+import android.widget.ArrayAdapter;
+
 import org.isoron.uhabits.*;
 import org.isoron.uhabits.commands.*;
 
@@ -40,6 +42,7 @@ public class EditHabitDialog extends BaseDialog
         originalHabit = habitList.getById(habitId);
         modifiedHabit = modelFactory.buildHabit();
         modifiedHabit.copyFrom(originalHabit);
+
     }
 
     @Override

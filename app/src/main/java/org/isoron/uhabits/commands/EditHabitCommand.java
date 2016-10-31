@@ -20,6 +20,7 @@
 package org.isoron.uhabits.commands;
 
 import android.support.annotation.*;
+import android.widget.Spinner;
 
 import com.google.auto.factory.*;
 
@@ -42,11 +43,14 @@ public class EditHabitCommand extends Command
 
     private boolean hasFrequencyChanged;
 
+    private Spinner tagSpinner;
+
     public EditHabitCommand(@Provided @NonNull ModelFactory modelFactory,
                             @NonNull HabitList habitList,
                             @NonNull Habit original,
                             @NonNull Habit modified)
     {
+
         this.habitList = habitList;
         this.savedId = original.getId();
         this.modified = modelFactory.buildHabit();
@@ -58,6 +62,7 @@ public class EditHabitCommand extends Command
         Frequency originalFreq = this.original.getFrequency();
         Frequency modifiedFreq = this.modified.getFrequency();
         hasFrequencyChanged = (!originalFreq.equals(modifiedFreq));
+//        tagSpinner = (Spinner) findViewById(R.id.tagList);
     }
 
     @Override

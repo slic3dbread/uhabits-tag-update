@@ -26,6 +26,7 @@
         android:title="@string/edit"
         android:icon="?iconEdit"/>
 
+<!-- this would need to be changed according to a tag -->
     <item
         android:id="@+id/action_color"
         android:title="@string/color_picker_default_title"

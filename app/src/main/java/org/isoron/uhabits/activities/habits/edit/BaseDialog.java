@@ -19,21 +19,59 @@
 
 package org.isoron.uhabits.activities.habits.edit;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteCursorDriver;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQuery;
+import android.graphics.drawable.ColorDrawable;
 import android.os.*;
 import android.support.annotation.*;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.*;
+import android.support.v7.widget.LinearLayoutCompat;
+import android.text.Layout;
 import android.text.format.*;
 import android.view.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
+
+import com.activeandroid.DatabaseHelper;
+import com.activeandroid.util.Log;
 import com.android.datetimepicker.time.*;
 
 import org.isoron.uhabits.*;
 import org.isoron.uhabits.activities.*;
 import org.isoron.uhabits.activities.common.dialogs.*;
+import org.isoron.uhabits.activities.habits.list.ListHabitsScreen;
 import org.isoron.uhabits.commands.*;
 import org.isoron.uhabits.models.*;
 import org.isoron.uhabits.preferences.*;
 
+import android.support.annotation.*;
+import android.view.*;
+
+import org.isoron.uhabits.*;
+import org.isoron.uhabits.models.*;
+import org.isoron.uhabits.activities.*;
+import org.isoron.uhabits.activities.habits.list.model.*;
+import org.isoron.uhabits.preferences.*;
+
+import javax.inject.*;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
 
 import butterknife.*;
@@ -61,15 +99,32 @@ public abstract class BaseDialog extends AppCompatDialogFragment
 
     private ColorPickerDialogFactory colorPickerDialogFactory;
 
+    private ArrayList<String> tagNames = new ArrayList<String>();
+
+    private ArrayAdapter<String> tagNamesAdapter;
+
+    private Spinner tagSpinner;
+
+    private Integer tagSelection;
+
+    private TagDB tagDB;
+
+
+    private SQLiteDatabase db;
+
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
 
+        // Relating to colour changes here
         BaseActivity activity = (BaseActivity) getActivity();
         colorPickerDialogFactory =
             activity.getComponent().getColorPickerDialogFactory();
+
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -94,7 +149,70 @@ public abstract class BaseDialog extends AppCompatDialogFragment
         initializeHabits();
         restoreSavedInstance(savedInstanceState);
         helper.populateForm(modifiedHabit);
+
+        tagDB = new TagDB(this.getContext(), "tag database", null, 1);
+
+        if (tagDB.getTagCount() == 0) {
+            tagDB.addTag(new Tag(1, "No Tag", 1));
+            tagDB.addTag(new Tag(2, "Add Tag", 2));
+        }
+
+            for (int i = 0; i < tagDB.getTagCount(); i++){
+                tagNames.add(i, tagDB.getTag(i+1).getName());
+            }
+
+
+        tagSpinner = (Spinner) view.findViewById(R.id.tagList);
+
+        tagNamesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item,tagNames);
+
+        tagSpinner.setAdapter(tagNamesAdapter);
+
+        tagSpinner.setVisibility(View.VISIBLE);
+
+        if (modifiedHabit.getTag() != null){
+            tagSpinner.setSelection(modifiedHabit.getTag().getId() - 1);
+        }
+
+        tagSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 1 /*tagNames.size() -1*/ && tagNames.size() != 1) { //if the 'add tag' is selected, do this
+
+                    showTagEdit(tagDB,  getActivity(), tagNames, tagNamesAdapter, tagSpinner, modifiedHabit, colorPickerDialogFactory, prefs, helper);
+
+                } else {
+                    // save
+                    modifiedHabit.setTag(tagDB.getTag(position + 1));
+                    tagSelection = tagDB.getTag(position + 1).getId();
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Should do nothing
+            }
+        });
+
         return view;
+    }
+
+    public void showTagEdit(TagDB tagdb, FragmentActivity activity, ArrayList<String> tagList, ArrayAdapter<String> tagNamesAdapter, Spinner tagSpinner, Habit modifiedHabit, ColorPickerDialogFactory colorPickerDialogFactory, Preferences prefs, BaseDialogHelper helper){
+        TagDialog tagDialog = new TagDialog();
+        tagDialog.setTagDB(tagdb);
+        tagDialog.setTagNames(tagList);
+        tagDialog.setTagSpinner(tagSpinner);
+        tagDialog.setTagNamesAdapter(tagNamesAdapter);
+        tagDialog.setFragmentActivity(activity);
+
+        tagDialog.setColorPickerParams(modifiedHabit, colorPickerDialogFactory, prefs, helper);
+        tagDialog.show(getFragmentManager(), "tagEdit");
+    }
+
+    public void pipeColorPicker (Habit modifiedHabit, ColorPickerDialogFactory colorPickerDialogFactory, Preferences prefs, BaseDialogHelper helper){
+
     }
 
     @OnItemSelected(R.id.sFrequency)
@@ -130,6 +248,7 @@ public abstract class BaseDialog extends AppCompatDialogFragment
     protected void restoreSavedInstance(@Nullable Bundle bundle)
     {
         if (bundle == null) return;
+        // Colour related code
         modifiedHabit.setColor(
             bundle.getInt("color", modifiedHabit.getColor()));
 
@@ -148,6 +267,7 @@ public abstract class BaseDialog extends AppCompatDialogFragment
     }
 
     protected abstract void saveHabit();
+
 
     @OnClick(R.id.buttonDiscard)
     void onButtonDiscardClick()
@@ -176,6 +296,7 @@ public abstract class BaseDialog extends AppCompatDialogFragment
     void onSaveButtonClick()
     {
         helper.parseFormIntoHabit(modifiedHabit);
+        modifiedHabit.setTag(tagDB.getTag(tagSelection));
         if (!helper.validate(modifiedHabit)) return;
         saveHabit();
         dismiss();
@@ -194,20 +315,22 @@ public abstract class BaseDialog extends AppCompatDialogFragment
         dialog.show(getFragmentManager(), "weekdayPicker");
     }
 
-    @OnClick(R.id.buttonPickColor)
-    void showColorPicker()
-    {
-        int color = modifiedHabit.getColor();
-        ColorPickerDialog picker = colorPickerDialogFactory.create(color);
+    // Actual colour picker code
+//    @OnClick(R.id.buttonPickColor)
+//    void showColorPicker()
+//    {
+//        int color = modifiedHabit.getColor();
+//        ColorPickerDialog picker = colorPickerDialogFactory.create(color);
+//
+//        picker.setListener(c -> {
+//            prefs.setDefaultHabitColor(c);
+//            modifiedHabit.setColor(c);
+//            helper.populateColor(c);
+//        });
+//
+//        picker.show(getFragmentManager(), "picker");
+//    }
 
-        picker.setListener(c -> {
-            prefs.setDefaultHabitColor(c);
-            modifiedHabit.setColor(c);
-            helper.populateColor(c);
-        });
-
-        picker.show(getFragmentManager(), "picker");
-    }
 
     private void showTimePicker(int defaultHour, int defaultMin)
     {

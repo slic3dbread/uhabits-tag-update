@@ -41,12 +41,45 @@
                 <requestFocus/>
             </EditText>
 
+<!-- Remove color option from habit and move it to tag
             <ImageButton
                 android:id="@+id/buttonPickColor"
                 style="@style/dialogFormInputColor"
                 android:contentDescription="@string/color_picker_default_title"
                 android:src="?dialogIconChangeColor"/>
+-->
         </LinearLayout>
+<!-- tag stuff starts here -->
+        <LinearLayout
+            android:id="@+id/formTagPanel"
+            style="@style/dialogFormPanel">
+
+            <LinearLayout
+                android:id="@+id/tagPanel"
+                style="@style/dialogFormRow">
+
+                <TextView
+                    android:id="@+id/textViewTag"
+                    style="@style/dialogFormLabel"
+                    android:text="Tag"/>
+
+
+                    <requestFocus/>
+
+
+                <Spinner
+                    android:id="@+id/tagList"
+                    android:theme="@style/dialogFormText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:minWidth="400dp">
+                    <!--android:entries="@array/snooze_interval_names"-->
+
+
+                </Spinner>
+
+            </LinearLayout>
+<!-- tag stuff ends here -->
 
         <EditText
             android:id="@+id/tvDescription"
@@ -96,7 +129,8 @@
                     style="@style/dialogFormText"
                     android:text="@string/days"
                     android:gravity="center_vertical"
-                    android:paddingLeft="12dp"/>
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"/>
 
             </org.apmem.tools.layouts.FlowLayout>
         </LinearLayout>
@@ -155,4 +189,5 @@
             android:layout_height="wrap_content"
             android:text="@string/save"/>
     </LinearLayout>
+</LinearLayout>
 </LinearLayout>

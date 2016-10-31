@@ -26,6 +26,9 @@ import android.support.v7.app.*;
 import android.view.*;
 
 import org.isoron.uhabits.*;
+import org.isoron.uhabits.activities.habits.list.*;
+import org.isoron.uhabits.models.*;
+import org.isoron.uhabits.models.sqlite.*;
 
 import static android.R.anim.*;
 
@@ -80,7 +83,7 @@ abstract public class BaseActivity extends AppCompatActivity
     public void restartWithFade()
     {
         new Handler().postDelayed(() -> {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, ListHabitsActivity.class);
             finish();
             overridePendingTransition(fade_in, fade_out);
             startActivity(intent);
@@ -124,6 +127,14 @@ abstract public class BaseActivity extends AppCompatActivity
             // ignored
         }
 
+        if (ex.getCause() instanceof InconsistentDatabaseException)
+        {
+            HabitsApplication app = (HabitsApplication) getApplication();
+            HabitList habits = app.getComponent().getHabitList();
+            habits.repair();
+            System.exit(0);
+        }
+
         if (androidExceptionHandler != null)
             androidExceptionHandler.uncaughtException(thread, ex);
         else System.exit(1);
@@ -132,8 +143,8 @@ abstract public class BaseActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int request, int result, Intent data)
     {
-        if (screen == null) return;
-        screen.onResult(request, result, data);
+        if (screen == null) super.onActivityResult(request, result, data);
+        else screen.onResult(request, result, data);
     }
 
     @Override
