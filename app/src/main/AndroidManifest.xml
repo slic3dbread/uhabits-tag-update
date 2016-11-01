@@ -41,7 +41,7 @@
         android:allowBackup="true"
         android:backupAgent=".HabitsBackupAgent"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/main_activity_title"
+        android:label="Loop"
         android:supportsRtl="true"
         android:theme="@style/AppBaseTheme">
 
