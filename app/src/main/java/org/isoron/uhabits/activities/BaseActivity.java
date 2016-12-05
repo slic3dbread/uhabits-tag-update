@@ -26,6 +26,8 @@ import android.support.v7.app.*;
 import android.view.*;
 
 import org.isoron.uhabits.*;
+import org.isoron.uhabits.activities.habits.edit.Tag;
+import org.isoron.uhabits.activities.habits.edit.TagDB;
 import org.isoron.uhabits.activities.habits.list.*;
 import org.isoron.uhabits.models.*;
 import org.isoron.uhabits.models.sqlite.*;
@@ -57,6 +59,14 @@ abstract public class BaseActivity extends AppCompatActivity
     private BaseScreen screen;
 
     private ActivityComponent component;
+
+    private TagDB test = new TagDB(this, "tag database", null, 1);
+//    public TagDB test = new TagDB(this.getContext(), "tag database", null, 1);
+
+
+    public TagDB getTagDB(){
+        return test;
+    }
 
     public ActivityComponent getComponent()
     {
@@ -164,5 +174,11 @@ abstract public class BaseActivity extends AppCompatActivity
             .build();
 
         component.getThemeSwitcher().apply();
+
+        if (test.getTagCount() == 0) {
+            test.addTag(new Tag(1, "No Tag", 1));
+            test.addTag(new Tag(2, "Add Tag", 2));
+        }
+
     }
 }
