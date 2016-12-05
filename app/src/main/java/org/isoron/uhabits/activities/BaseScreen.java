@@ -34,6 +34,8 @@ import android.view.*;
 import android.widget.*;
 
 import org.isoron.uhabits.*;
+import org.isoron.uhabits.activities.habits.edit.Tag;
+import org.isoron.uhabits.activities.habits.edit.TagDB;
 import org.isoron.uhabits.utils.*;
 
 import java.io.*;
@@ -60,9 +62,32 @@ public class BaseScreen
 
     private Snackbar snackbar;
 
+    private TagDB tagDB;
+
+    private String tagNames;
+
+
+//    TagDB test1 = this.activity.getTagDB();
+
     public BaseScreen(@NonNull BaseActivity activity)
     {
         this.activity = activity;
+
+        tagDB = new TagDB(this.activity, "tag database test", null, 1);
+
+        if (tagDB.getTagCount() == 0) {
+            tagDB.addTag(new Tag(1, "No Tag", 1));
+            tagDB.addTag(new Tag(2, "Add Tag", 2));
+        }
+
+//        for (int i = 0; i < tagDB.getTagCount(); i++) {
+//            tagNames.add(i, tagDB.getTag(i + 1).getName());
+//        }
+
+    }
+
+    public TagDB getTagDB(){
+        return tagDB;
     }
 
     @Deprecated

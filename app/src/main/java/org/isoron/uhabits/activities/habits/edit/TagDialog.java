@@ -63,7 +63,7 @@ import butterknife.OnClick;
 /**
  * Dialog to set a time.
  */
-public class TagDialog extends AppCompatDialogFragment implements OnValueSelectedListener{
+public class TagDialog extends AppCompatDialogFragment implements OnValueSelectedListener {
     private static final String TAG = "TagDialog";
     private TagDB tagDataBase;
     private FragmentActivity fragmentActivity;
@@ -82,6 +82,7 @@ public class TagDialog extends AppCompatDialogFragment implements OnValueSelecte
     public void onValueSelected(int pickerIndex, int newValue, boolean autoAdvance) {
 
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -111,33 +112,36 @@ public class TagDialog extends AppCompatDialogFragment implements OnValueSelecte
         });
 
 
-
-
-
-
-
         saveBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
+                tagDataBase = new TagDB(getContext(), "tag database", null, 1);
+
+                if (tagDataBase.getTagCount() == 0) {
+                    tagDataBase.addTag(new Tag(1, "No Tag", 1));
+                    tagDataBase.addTag(new Tag(2, "Add Tag", 2));
+                }
+
                 Tag newTag = new Tag(tagDataBase.getTagCount() + 1, tagMsg.getEditableText().toString(), 5);
-                if(tagColor != 5){
+                if (tagColor != 5) {
                     newTag.setColor(tagColor);
                 }
                 tagDataBase.addTag(newTag); // 5 is the default color chosen in Habits class
 
-                addTagToList(tagDataBase, tagNames, tagNamesAdapter, tagSpinner);
+//                addTagToList(tagDataBase, tagNames, tagNamesAdapter, tagSpinner);  // should be unnecessary
                 dismiss();
 
             }
         });
 
-                    Button cancelBtn = (Button) view.findViewById(R.id.discardBtn);
-                    cancelBtn.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
+        Button cancelBtn = (Button) view.findViewById(R.id.discardBtn);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
 
-                            dismiss();
+                dismiss();
 
-                        }
-                    });
+            }
+        });
 
         return view;
 
@@ -145,23 +149,26 @@ public class TagDialog extends AppCompatDialogFragment implements OnValueSelecte
     }
 
 
-    public void setTagDB(TagDB newTagDB){
+    public void setTagDB(TagDB newTagDB) {
         this.tagDataBase = newTagDB;
     }
-    public void setTagNames(ArrayList<String> newTagList){
+
+    public void setTagNames(ArrayList<String> newTagList) {
         this.tagNames = newTagList;
     }
-    public void setTagNamesAdapter(ArrayAdapter<String> newTagAdapter){
+
+    public void setTagNamesAdapter(ArrayAdapter<String> newTagAdapter) {
         this.tagNamesAdapter = newTagAdapter;
     }
-    public void setTagSpinner(Spinner newSpinner){
+
+    public void setTagSpinner(Spinner newSpinner) {
         this.tagSpinner = newSpinner;
     }
 
-    public void setFragmentActivity(FragmentActivity newActivity){
+    public void setFragmentActivity(FragmentActivity newActivity) {
         this.fragmentActivity = newActivity;
 
-        if(this.fragmentActivity != null){
+        if (this.fragmentActivity != null) {
 //            EditText tagMsg = (EditText) fragmentActivity.findViewById(R.id.tagName);
 //
 //            Button saveBtn = (Button) fragmentActivity.findViewById(R.id.saveBtn);
@@ -169,13 +176,17 @@ public class TagDialog extends AppCompatDialogFragment implements OnValueSelecte
         }
     }
 
-    public void addTagToList(TagDB tagDB, ArrayList<String> tagList, ArrayAdapter<String> tagNamesAdapter, Spinner tagSpinner){
-        tagList.add(tagDB.getTag(tagDB.getTagCount()).getName());
+    // EDIT FROM ASN 4 - THIS WAS TO DYNAMICALLY UPDATE TAGS LIST, NO LONGER NEEDED
 
-        tagNamesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item,tagNames);
+//    public void addTagToList(TagDB tagDB, ArrayList<String> tagList, ArrayAdapter<String> tagNamesAdapter, Spinner tagSpinner) {
+//        tagList.add(tagDB.getTag(tagDB.getTagCount()).getName());
+//
+//        tagNamesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, tagNames);
+//
+//        tagSpinner.setAdapter(tagNamesAdapter);
+//    }
 
-        tagSpinner.setAdapter(tagNamesAdapter);
-    }
+
 //    @OnClick(R.id.buttonPickColor)
 //    void showTagColorPicker(Habit modifiedHabit, ColorPickerDialogFactory colorPickerDialogFactory, Preferences prefs, BaseDialogHelper helper)
 //    {
@@ -191,7 +202,9 @@ public class TagDialog extends AppCompatDialogFragment implements OnValueSelecte
 //        picker.show(getFragmentManager(), "picker");
 //    }
 
-    public void setColorPickerParams(Habit modifiedHabit, ColorPickerDialogFactory colorPickerDialogFactory, Preferences prefs, BaseDialogHelper helper){
+    // EDIT FROM ASN 4
+
+    public void setColorPickerParams(Habit modifiedHabit, ColorPickerDialogFactory colorPickerDialogFactory, Preferences prefs, BaseDialogHelper helper) {
         this.modifiedHabit = modifiedHabit;
         this.colorPickerDialogFactory = colorPickerDialogFactory;
         this.prefs = prefs;

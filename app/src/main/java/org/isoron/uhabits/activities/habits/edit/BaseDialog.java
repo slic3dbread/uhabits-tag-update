@@ -76,8 +76,7 @@ import java.util.*;
 
 import butterknife.*;
 
-public abstract class BaseDialog extends AppCompatDialogFragment
-{
+public abstract class BaseDialog extends AppCompatDialogFragment {
     @Nullable
     protected Habit originalHabit;
 
@@ -109,19 +108,14 @@ public abstract class BaseDialog extends AppCompatDialogFragment
 
     private TagDB tagDB;
 
-
-    private SQLiteDatabase db;
-
-
     @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         // Relating to colour changes here
         BaseActivity activity = (BaseActivity) getActivity();
         colorPickerDialogFactory =
-            activity.getComponent().getColorPickerDialogFactory();
+                activity.getComponent().getColorPickerDialogFactory();
 
     }
 
@@ -129,12 +123,11 @@ public abstract class BaseDialog extends AppCompatDialogFragment
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.edit_habit, container, false);
 
         HabitsApplication app =
-            (HabitsApplication) getContext().getApplicationContext();
+                (HabitsApplication) getContext().getApplicationContext();
 
         appComponent = app.getComponent();
         prefs = appComponent.getPreferences();
@@ -157,20 +150,19 @@ public abstract class BaseDialog extends AppCompatDialogFragment
             tagDB.addTag(new Tag(2, "Add Tag", 2));
         }
 
-            for (int i = 0; i < tagDB.getTagCount(); i++){
-                tagNames.add(i, tagDB.getTag(i+1).getName());
-            }
-
+        for (int i = 0; i < tagDB.getTagCount(); i++) {
+            tagNames.add(i, tagDB.getTag(i + 1).getName());
+        }
 
         tagSpinner = (Spinner) view.findViewById(R.id.tagList);
 
-        tagNamesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item,tagNames);
+        tagNamesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, tagNames);
 
         tagSpinner.setAdapter(tagNamesAdapter);
 
         tagSpinner.setVisibility(View.VISIBLE);
 
-        if (modifiedHabit.getTag() != null){
+        if (modifiedHabit.getTag() != null) {
             tagSpinner.setSelection(modifiedHabit.getTag().getId() - 1);
         }
 
@@ -180,7 +172,8 @@ public abstract class BaseDialog extends AppCompatDialogFragment
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 1 /*tagNames.size() -1*/ && tagNames.size() != 1) { //if the 'add tag' is selected, do this
 
-                    showTagEdit(tagDB,  getActivity(), tagNames, tagNamesAdapter, tagSpinner, modifiedHabit, colorPickerDialogFactory, prefs, helper);
+//                    showTagEdit(tagDB, getActivity(), tagNames, tagNamesAdapter, tagSpinner, modifiedHabit, colorPickerDialogFactory, prefs, helper);
+                    showTagEdit(tagDB, getActivity(), modifiedHabit, colorPickerDialogFactory, prefs, helper);
 
                 } else {
                     // save
@@ -199,41 +192,55 @@ public abstract class BaseDialog extends AppCompatDialogFragment
         return view;
     }
 
-    public void showTagEdit(TagDB tagdb, FragmentActivity activity, ArrayList<String> tagList, ArrayAdapter<String> tagNamesAdapter, Spinner tagSpinner, Habit modifiedHabit, ColorPickerDialogFactory colorPickerDialogFactory, Preferences prefs, BaseDialogHelper helper){
+    public void showTagEdit(TagDB tagdb, FragmentActivity activity, Habit modifiedHabit, ColorPickerDialogFactory colorPickerDialogFactory, Preferences prefs, BaseDialogHelper helper) {
         TagDialog tagDialog = new TagDialog();
         tagDialog.setTagDB(tagdb);
-        tagDialog.setTagNames(tagList);
-        tagDialog.setTagSpinner(tagSpinner);
-        tagDialog.setTagNamesAdapter(tagNamesAdapter);
-        tagDialog.setFragmentActivity(activity);
 
+//        tagDialog.setTagSpinner(tagSpinner);
+//        tagDialog.setTagNamesAdapter(tagNamesAdapter);
+        tagDialog.setFragmentActivity(activity);
         tagDialog.setColorPickerParams(modifiedHabit, colorPickerDialogFactory, prefs, helper);
+
+
         tagDialog.show(getFragmentManager(), "tagEdit");
     }
 
-    public void pipeColorPicker (Habit modifiedHabit, ColorPickerDialogFactory colorPickerDialogFactory, Preferences prefs, BaseDialogHelper helper){
+//public void showTagEdit(TagDB tagdb, FragmentActivity activity, ArrayList<String> tagList, ArrayAdapter<String> tagNamesAdapter, Spinner tagSpinner, Habit modifiedHabit, ColorPickerDialogFactory colorPickerDialogFactory, Preferences prefs, BaseDialogHelper helper) {
+//        TagDialog tagDialog = new TagDialog();
+//        tagDialog.setTagDB(tagdb);
+//        tagDialog.setTagNames(tagList);
+//        tagDialog.setTagSpinner(tagSpinner);
+//        tagDialog.setTagNamesAdapter(tagNamesAdapter);
+//        tagDialog.setFragmentActivity(activity);
+//
+//        tagDialog.setColorPickerParams(modifiedHabit, colorPickerDialogFactory, prefs, helper);
+//        tagDialog.show(getFragmentManager(), "tagEdit");
+//    }
+
+
+
+
+
+    public void pipeColorPicker(Habit modifiedHabit, ColorPickerDialogFactory colorPickerDialogFactory, Preferences prefs, BaseDialogHelper helper) {
 
     }
 
     @OnItemSelected(R.id.sFrequency)
-    public void onFrequencySelected(int position)
-    {
+    public void onFrequencySelected(int position) {
         if (position < 0 || position > 4) throw new IllegalArgumentException();
-        int freqNums[] = { 1, 1, 2, 5, 3 };
-        int freqDens[] = { 1, 7, 7, 7, 7 };
+        int freqNums[] = {1, 1, 2, 5, 3};
+        int freqDens[] = {1, 7, 7, 7, 7};
         modifiedHabit.setFrequency(
-            new Frequency(freqNums[position], freqDens[position]));
+                new Frequency(freqNums[position], freqDens[position]));
         helper.populateFrequencyFields(modifiedHabit);
     }
 
     @Override
     @SuppressWarnings("ConstantConditions")
-    public void onSaveInstanceState(Bundle outState)
-    {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("color", modifiedHabit.getColor());
-        if (modifiedHabit.hasReminder())
-        {
+        if (modifiedHabit.hasReminder()) {
             Reminder reminder = modifiedHabit.getReminder();
             outState.putInt("reminderMin", reminder.getMinute());
             outState.putInt("reminderHour", reminder.getHour());
@@ -245,12 +252,11 @@ public abstract class BaseDialog extends AppCompatDialogFragment
 
     protected abstract void initializeHabits();
 
-    protected void restoreSavedInstance(@Nullable Bundle bundle)
-    {
+    protected void restoreSavedInstance(@Nullable Bundle bundle) {
         if (bundle == null) return;
         // Colour related code
         modifiedHabit.setColor(
-            bundle.getInt("color", modifiedHabit.getColor()));
+                bundle.getInt("color", modifiedHabit.getColor()));
 
         modifiedHabit.setReminder(null);
 
@@ -258,10 +264,9 @@ public abstract class BaseDialog extends AppCompatDialogFragment
         int minute = (bundle.getInt("reminderMin", -1));
         int days = (bundle.getInt("reminderDays", -1));
 
-        if (hour >= 0 && minute >= 0)
-        {
+        if (hour >= 0 && minute >= 0) {
             Reminder reminder =
-                new Reminder(hour, minute, new WeekdayList(days));
+                    new Reminder(hour, minute, new WeekdayList(days));
             modifiedHabit.setReminder(reminder);
         }
     }
@@ -270,20 +275,17 @@ public abstract class BaseDialog extends AppCompatDialogFragment
 
 
     @OnClick(R.id.buttonDiscard)
-    void onButtonDiscardClick()
-    {
+    void onButtonDiscardClick() {
         dismiss();
     }
 
     @OnClick(R.id.tvReminderTime)
     @SuppressWarnings("ConstantConditions")
-    void onDateSpinnerClick()
-    {
+    void onDateSpinnerClick() {
         int defaultHour = 8;
         int defaultMin = 0;
 
-        if (modifiedHabit.hasReminder())
-        {
+        if (modifiedHabit.hasReminder()) {
             Reminder reminder = modifiedHabit.getReminder();
             defaultHour = reminder.getHour();
             defaultMin = reminder.getMinute();
@@ -293,8 +295,7 @@ public abstract class BaseDialog extends AppCompatDialogFragment
     }
 
     @OnClick(R.id.buttonSave)
-    void onSaveButtonClick()
-    {
+    void onSaveButtonClick() {
         helper.parseFormIntoHabit(modifiedHabit);
         modifiedHabit.setTag(tagDB.getTag(tagSelection));
         if (!helper.validate(modifiedHabit)) return;
@@ -304,8 +305,7 @@ public abstract class BaseDialog extends AppCompatDialogFragment
 
     @OnClick(R.id.tvReminderDays)
     @SuppressWarnings("ConstantConditions")
-    void onWeekdayClick()
-    {
+    void onWeekdayClick() {
         if (!modifiedHabit.hasReminder()) return;
         Reminder reminder = modifiedHabit.getReminder();
 
@@ -332,52 +332,45 @@ public abstract class BaseDialog extends AppCompatDialogFragment
 //    }
 
 
-    private void showTimePicker(int defaultHour, int defaultMin)
-    {
+    private void showTimePicker(int defaultHour, int defaultMin) {
         boolean is24HourMode = DateFormat.is24HourFormat(getContext());
         TimePickerDialog timePicker =
-            TimePickerDialog.newInstance(new OnTimeSetListener(), defaultHour,
-                defaultMin, is24HourMode);
+                TimePickerDialog.newInstance(new OnTimeSetListener(), defaultHour,
+                        defaultMin, is24HourMode);
         timePicker.show(getFragmentManager(), "timePicker");
     }
 
     private class OnTimeSetListener
-        implements TimePickerDialog.OnTimeSetListener
-    {
+            implements TimePickerDialog.OnTimeSetListener {
         @Override
-        public void onTimeCleared(RadialPickerLayout view)
-        {
+        public void onTimeCleared(RadialPickerLayout view) {
             modifiedHabit.clearReminder();
             helper.populateReminderFields(modifiedHabit);
         }
 
         @Override
-        public void onTimeSet(RadialPickerLayout view, int hour, int minute)
-        {
+        public void onTimeSet(RadialPickerLayout view, int hour, int minute) {
             Reminder reminder =
-                new Reminder(hour, minute, WeekdayList.EVERY_DAY);
+                    new Reminder(hour, minute, WeekdayList.EVERY_DAY);
             modifiedHabit.setReminder(reminder);
             helper.populateReminderFields(modifiedHabit);
         }
     }
 
     private class OnWeekdaysPickedListener
-        implements WeekdayPickerDialog.OnWeekdaysPickedListener
-    {
+            implements WeekdayPickerDialog.OnWeekdaysPickedListener {
         @Override
-        public void onWeekdaysPicked(boolean[] selectedDays)
-        {
+        public void onWeekdaysPicked(boolean[] selectedDays) {
             if (isSelectionEmpty(selectedDays)) Arrays.fill(selectedDays, true);
 
             Reminder oldReminder = modifiedHabit.getReminder();
             modifiedHabit.setReminder(
-                new Reminder(oldReminder.getHour(), oldReminder.getMinute(),
-                    new WeekdayList(selectedDays)));
+                    new Reminder(oldReminder.getHour(), oldReminder.getMinute(),
+                            new WeekdayList(selectedDays)));
             helper.populateReminderFields(modifiedHabit);
         }
 
-        private boolean isSelectionEmpty(boolean[] selectedDays)
-        {
+        private boolean isSelectionEmpty(boolean[] selectedDays) {
             for (boolean d : selectedDays) if (d) return false;
             return true;
         }

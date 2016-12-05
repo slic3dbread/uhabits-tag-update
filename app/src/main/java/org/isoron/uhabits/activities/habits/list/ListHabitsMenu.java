@@ -90,6 +90,15 @@ public class ListHabitsMenu extends BaseMenu
                 screen.showCreateHabitScreen();
                 return true;
 
+            case R.id.addTag:
+                screen.openAddTagDialog();
+                System.out.println("Clicked on Add Tag Button");
+                return true;
+
+            case R.id.removeTag:
+                System.out.println("Clicked on Remove Tag Button");
+                return true;
+
             case R.id.actionFAQ:
                 screen.showFAQScreen();
                 return true;

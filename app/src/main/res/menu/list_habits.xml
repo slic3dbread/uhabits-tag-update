@@ -28,6 +28,27 @@
         android:title="@string/add_habit"
         app:showAsAction="always"/>
 
+    <!-- NEW TAG BUTTON STUFF STARTS HERE -->
+    <item
+        android:id="@+id/actionTag"
+        android:icon="?iconUnarchive"
+        android:title="Add or Remove Tag"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/addTag"
+                android:enabled="true"
+                android:title="Add Tag"/>
+
+            <item
+                android:id="@+id/removeTag"
+                android:enabled="true"
+                android:title="Remove Tag"/>
+        </menu>
+    </item>
+    <!-- NEW TAG BUTTON STUFF STARTS HERE -->
+
+
     <item
         android:id="@+id/action_filter"
         android:icon="?iconFilter"
