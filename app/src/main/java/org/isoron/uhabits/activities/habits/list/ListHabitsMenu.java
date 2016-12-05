@@ -96,6 +96,7 @@ public class ListHabitsMenu extends BaseMenu
                 return true;
 
             case R.id.removeTag:
+                screen.openRemoveTagDialog();
                 System.out.println("Clicked on Remove Tag Button");
                 return true;
 

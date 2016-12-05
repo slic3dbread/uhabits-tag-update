@@ -75,6 +75,9 @@ public class ListHabitsScreen extends BaseScreen
     private final CreateTagDialogFactory createTagDialogFactory;
 
     @NonNull
+    private final CreateDeleteTagDialogFactory createDeleteTagDialogFactory;
+
+    @NonNull
     private final FilePickerDialogFactory filePickerDialogFactory;
 
     @NonNull
@@ -100,7 +103,8 @@ public class ListHabitsScreen extends BaseScreen
                             @NonNull FilePickerDialogFactory filePickerDialogFactory,
                             @NonNull ColorPickerDialogFactory colorPickerFactory,
                             @NonNull EditHabitDialogFactory editHabitDialogFactory,
-                            @NonNull CreateTagDialogFactory createTagDialogFactory)
+                            @NonNull CreateTagDialogFactory createTagDialogFactory,
+                            @NonNull CreateDeleteTagDialogFactory createDeleteTagDialogFactory)
     {
         super(activity);
         setRootView(rootView);
@@ -113,7 +117,8 @@ public class ListHabitsScreen extends BaseScreen
         this.filePickerDialogFactory = filePickerDialogFactory;
         this.intentFactory = intentFactory;
         this.themeSwitcher = themeSwitcher;
-        this.createTagDialogFactory = createTagDialogFactory;   }
+        this.createTagDialogFactory = createTagDialogFactory;
+        this.createDeleteTagDialogFactory = createDeleteTagDialogFactory; }
 
     public void onAttached()
     {
@@ -257,5 +262,9 @@ public class ListHabitsScreen extends BaseScreen
 //        new TagDialog(, "testDB");
 //        new TagDialog().showTagEdit(tagDB, getActivity(), modifiedHabit, colorPickerDialogFactory, prefs, helper);
 //        showTagEdit(tagDB,  getActivity(), modifiedHabit);
+    }
+
+    public void openRemoveTagDialog(){
+        activity.showDialog(createDeleteTagDialogFactory.create(), "removeTag");
     }
 }

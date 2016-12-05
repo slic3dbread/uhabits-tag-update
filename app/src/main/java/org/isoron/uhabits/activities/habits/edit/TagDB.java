@@ -68,6 +68,18 @@ public class TagDB extends SQLiteOpenHelper{
         return newTag;
     }
 
+    // Getting one Tag
+    public Tag getTagByName(String name){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_TAGS, new String[] {KEY_ID, KEY_NAME, KEY_COLOR}, KEY_NAME + "=?", new String[] {name}, null, null, null, null);
+        if(cursor != null) {
+            boolean temp = cursor.moveToFirst();
+            System.out.println(temp);
+        }
+        Tag newTag = new Tag(Integer.parseInt(cursor.getString(0)), cursor.getString(1), Integer.parseInt(cursor.getString(2)));
+        return newTag;
+    }
+
     // Get every tag
     public List<Tag> getAllTags(){
         List<Tag> tagList = new ArrayList<Tag>();
@@ -99,15 +111,69 @@ public class TagDB extends SQLiteOpenHelper{
         return temp;
     }
 
-    public void deleteTag(String name) {
+    protected void deleteTag(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_TAGS;
+        Cursor cursor = db.rawQuery(selectQuery, null);
         System.out.println("Count before delete");
-        System.out.println(db.getPageSize());
+        System.out.println(getTagCount());
+        int tagIter = 1;
+
 
         db.delete(TABLE_TAGS, KEY_NAME + "=?", new String[] {name});
 
+        if (cursor.moveToFirst()) {
+            do {
+                Tag tag = new Tag(
+                        Integer.parseInt(cursor.getString(0)),
+                        cursor.getString(1),
+                        Integer.parseInt(cursor.getString(2)));
+                changeIDTag(tag, tagIter);
+                tagIter++;
+
+            } while (cursor.moveToNext());
+        }
+
         System.out.println("Count after delete");
-        System.out.println(db.getPageSize());
+        System.out.println(getTagCount());
         db.close();
+    }
+
+    protected void refreshIndex() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_TAGS;
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        int tagIter = 1;
+
+        if (cursor.moveToFirst()) {
+            do {
+                Tag tag = new Tag(
+                        Integer.parseInt(cursor.getString(0)),
+                        cursor.getString(1),
+                        Integer.parseInt(cursor.getString(2)));
+                changeIDTag(tag, tagIter);
+                tagIter++;
+
+            } while (cursor.moveToNext());
+        }
+
+        db.close();
+    }
+
+    public void deleteTagAndRefresh(String name) {
+        deleteTag(name);
+        refreshIndex();
+    }
+
+
+    // Add new entry
+    public void changeIDTag(Tag tag, int newId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_ID, newId);
+        values.put(KEY_NAME, tag.getName());
+        values.put(KEY_COLOR, tag.getColor());
+        db.update(TABLE_TAGS, values, KEY_NAME + "=?", new String[] {tag.getName()});
     }
 }
