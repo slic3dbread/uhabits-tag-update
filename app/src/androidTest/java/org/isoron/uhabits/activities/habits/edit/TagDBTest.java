@@ -16,7 +16,6 @@ import static org.mockito.Mockito.mock;
 @MediumTest
 public class TagDBTest extends BaseAndroidTest
 {
-
     private TagDB tagDB;
 
     private Tag testTag1;
@@ -29,13 +28,22 @@ public class TagDBTest extends BaseAndroidTest
     {
         super.setUp();
 
-        tagDB = new TagDB(InstrumentationRegistry.getTargetContext(), "tag database", null, 1);
-
-        //tagDB.clearAllTags();
+        tagDB = new TagDB(InstrumentationRegistry.getTargetContext(), "tag database test", null, 1);
 
         testTag1 = new Tag(12345, "This is the first tag", 1);
         testTag2 = new Tag(67890, "This is the second tag", 2);
         testTag3 = new Tag(369, "This is the third tag", 3);
+
+        tagDB.addTag(testTag1);
+        tagDB.addTag(testTag2);
+        tagDB.addTag(testTag3);
+    }
+
+    @After
+    public void tearDown()
+    {
+        tagDB.close();
+        InstrumentationRegistry.getTargetContext().deleteDatabase("tag database test");
     }
 
     @Test
@@ -47,38 +55,29 @@ public class TagDBTest extends BaseAndroidTest
     @Test
     public void testAddTag()
     {
-        tagDB.addTag(testTag1);
-        tagDB.addTag(testTag2);
-        tagDB.addTag(testTag3);
+        Tag newTag = new Tag(444, "Testing 1,2,3", 10);
+        tagDB.addTag(newTag);
 
-        assertEquals(5, tagDB.getTagCount());
+        Tag returnedTag = tagDB.getTag(444);
 
-        Tag returnedTag = tagDB.getTag(12345);
-
-        assertEquals(12345, returnedTag.getId());
-        assertEquals(1, returnedTag.getColor());
-        assertEquals("This is the first tag", returnedTag.getName());
-
-
-        returnedTag = tagDB.getTag(67890);
-
-        assertEquals(67890, returnedTag.getId());
-        assertEquals(2, returnedTag.getColor());
-        assertEquals("This is the second tag", returnedTag.getName());
-
-
-        returnedTag = tagDB.getTag(369);
-
-        assertEquals(369, returnedTag.getId());
-        assertEquals(3, returnedTag.getColor());
-        assertEquals("This is the second tag", returnedTag.getName());
+        assertEquals(444, returnedTag.getId());
+        assertEquals(10, returnedTag.getColor());
+        assertEquals("Testing 1,2,3", returnedTag.getName());
     }
 
+    @Test
+    public void testGetTagCount()
+    {
+        int count = tagDB.getTagCount();
+        assertEquals(3, count);
+    }
 
     @Test
     public void testGetAllTag()
     {
         List<Tag> returnedTags = tagDB.getAllTags();
+
+        assertEquals(3, returnedTags.size());
 
         Tag firstTag = returnedTags.get(0);
         Tag lastTag = returnedTags.get(2);
@@ -92,32 +91,12 @@ public class TagDBTest extends BaseAndroidTest
         assertEquals("This is the third tag", lastTag.getName());
     }
 
-
     @Test
     public void testDeleteTag() {
 
         assertEquals(3, tagDB.getTagCount());
-
-        //tagDB.deleteTag("This is the first tag");
-
+        tagDB.deleteTag("This is the first tag");
         assertEquals(2, tagDB.getTagCount());
     }
 
-    @Test
-    public void testClearAllTags() {
-
-        assertEquals(3, tagDB.getTagCount());
-
-        //tagDB.deleteTag("This is the first tag");
-
-        assertEquals(2, tagDB.getTagCount());
-    }
-
-    @After
-    public void tearDown()
-    {
-        //super.tearDown();
-
-        tagDB.close();
-    }
 }

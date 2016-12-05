@@ -67,6 +67,7 @@ public class TagDB extends SQLiteOpenHelper{
         Tag newTag = new Tag(Integer.parseInt(cursor.getString(0)), cursor.getString(1), Integer.parseInt(cursor.getString(2)));
         return newTag;
     }
+
     // Get every tag
     public List<Tag> getAllTags(){
         List<Tag> tagList = new ArrayList<Tag>();
@@ -86,7 +87,6 @@ public class TagDB extends SQLiteOpenHelper{
             } while (cursor.moveToNext());
         }
         return tagList;
-
     }
 
     public int getTagCount(){
@@ -99,4 +99,15 @@ public class TagDB extends SQLiteOpenHelper{
         return temp;
     }
 
+    public void deleteTag(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        System.out.println("Count before delete");
+        System.out.println(db.getPageSize());
+
+        db.delete(TABLE_TAGS, KEY_NAME + "=?", new String[] {name});
+
+        System.out.println("Count after delete");
+        System.out.println(db.getPageSize());
+        db.close();
+    }
 }
