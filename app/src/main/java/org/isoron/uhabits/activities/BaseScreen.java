@@ -77,7 +77,6 @@ public class BaseScreen
 
         if (tagDB.getTagCount() == 0) {
             tagDB.addTag(new Tag(1, "No Tag", 1));
-            tagDB.addTag(new Tag(2, "Add Tag", 2));
         }
 
 //        for (int i = 0; i < tagDB.getTagCount(); i++) {

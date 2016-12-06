@@ -119,7 +119,6 @@ public class TagDialog extends AppCompatDialogFragment implements OnValueSelecte
 
                 if (tagDataBase.getTagCount() == 0) {
                     tagDataBase.addTag(new Tag(1, "No Tag", 1));
-                    tagDataBase.addTag(new Tag(2, "Add Tag", 2));
                 }
 
                 Tag newTag = new Tag(tagDataBase.getTagCount() + 1, tagMsg.getEditableText().toString(), 5);

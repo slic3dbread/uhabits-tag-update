@@ -72,6 +72,7 @@ public class Habit
 
     private ModelObservable observable = new ModelObservable();
 
+    @NonNull
     private Tag tag;
 
     /**
