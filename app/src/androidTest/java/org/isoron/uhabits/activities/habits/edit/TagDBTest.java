@@ -66,6 +66,37 @@ public class TagDBTest extends BaseAndroidTest
     }
 
     @Test
+    public void testGetTag()
+    {
+        Tag returnedTag = tagDB.getTag(67890);
+
+        assertEquals(67890, returnedTag.getId());
+        assertEquals(2, returnedTag.getColor());
+        assertEquals("This is the second tag", returnedTag.getName());
+    }
+
+    @Test
+    public void testGetTagThatDoesNotExist()
+    {
+        try {
+            Tag returnedTag = tagDB.getTag(5);
+            fail("Exception was not thrown");
+        } catch(Exception e) {
+
+        }
+    }
+
+    @Test
+    public void testGetTagByName()
+    {
+        Tag returnedTag = tagDB.getTagByName("This is the third tag");
+
+        assertEquals(369, returnedTag.getId());
+        assertEquals(3, returnedTag.getColor());
+        assertEquals("This is the third tag", returnedTag.getName());
+    }
+
+    @Test
     public void testGetTagCount()
     {
         int count = tagDB.getTagCount();
@@ -73,7 +104,21 @@ public class TagDBTest extends BaseAndroidTest
     }
 
     @Test
-    public void testGetAllTag()
+    public void testGetTagCountWhenDatabaseEmpty()
+    {
+        int count = tagDB.getTagCount();
+        assertEquals(3, count);
+
+        tagDB.deleteTag("This is the first tag");
+        tagDB.deleteTag("This is the second tag");
+        tagDB.deleteTag("This is the third tag");
+
+        count = tagDB.getTagCount();
+        assertEquals(0, count);
+    }
+
+    @Test
+    public void testGetAllTags()
     {
         List<Tag> returnedTags = tagDB.getAllTags();
 
@@ -82,21 +127,64 @@ public class TagDBTest extends BaseAndroidTest
         Tag firstTag = returnedTags.get(0);
         Tag lastTag = returnedTags.get(2);
 
-        assertEquals(12345, firstTag.getId());
-        assertEquals(1, firstTag.getColor());
-        assertEquals("This is the first tag", firstTag.getName());
+        assertEquals(369, firstTag.getId());
+        assertEquals(3, firstTag.getColor());
+        assertEquals("This is the third tag", firstTag.getName());
 
-        assertEquals(369, lastTag.getId());
-        assertEquals(3, lastTag.getColor());
-        assertEquals("This is the third tag", lastTag.getName());
+        assertEquals(67890, lastTag.getId());
+        assertEquals(2, lastTag.getColor());
+        assertEquals("This is the second tag", lastTag.getName());
     }
 
     @Test
-    public void testDeleteTag() {
-
+    public void testDeleteTag()
+    {
         assertEquals(3, tagDB.getTagCount());
         tagDB.deleteTag("This is the first tag");
         assertEquals(2, tagDB.getTagCount());
     }
 
+    @Test
+    public void testRefreshIndex()
+    {
+        tagDB.refreshIndex();
+
+        Tag returnedTag = tagDB.getTagByName("This is the first tag");
+
+        assertEquals(2, returnedTag.getId());
+        assertEquals(1, returnedTag.getColor());
+        assertEquals("This is the first tag", returnedTag.getName());
+
+        returnedTag = tagDB.getTagByName("This is the second tag");
+
+        assertEquals(3, returnedTag.getId());
+        assertEquals(2, returnedTag.getColor());
+        assertEquals("This is the second tag", returnedTag.getName());
+
+        returnedTag = tagDB.getTagByName("This is the third tag");
+
+        assertEquals(1, returnedTag.getId());
+        assertEquals(3, returnedTag.getColor());
+        assertEquals("This is the third tag", returnedTag.getName());
+    }
+
+    @Test
+    public void testDeleteTagAndRefresh()
+    {
+        assertEquals(3, tagDB.getTagCount());
+        tagDB.deleteTagAndRefresh("This is the first tag");
+        assertEquals(2, tagDB.getTagCount());
+
+        Tag returnedTag = tagDB.getTagByName("This is the second tag");
+
+        assertEquals(2, returnedTag.getId());
+        assertEquals(2, returnedTag.getColor());
+        assertEquals("This is the second tag", returnedTag.getName());
+
+        returnedTag = tagDB.getTagByName("This is the third tag");
+
+        assertEquals(1, returnedTag.getId());
+        assertEquals(3, returnedTag.getColor());
+        assertEquals("This is the third tag", returnedTag.getName());
+    }
 }

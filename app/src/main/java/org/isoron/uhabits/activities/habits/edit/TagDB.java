@@ -34,7 +34,6 @@ public class TagDB extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TAGS_TABLE = "CREATE TABLE " + TABLE_TAGS + "(" + KEY_ID + " INTEGER PRIMARY KEY, " + KEY_NAME + " TEXT, " + KEY_COLOR + " INTEGER" + ")";
         db.execSQL(CREATE_TAGS_TABLE);
-
     }
 
     @Override
@@ -113,29 +112,7 @@ public class TagDB extends SQLiteOpenHelper{
 
     protected void deleteTag(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String selectQuery = "SELECT * FROM " + TABLE_TAGS;
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        System.out.println("Count before delete");
-        System.out.println(getTagCount());
-        int tagIter = 1;
-
-
         db.delete(TABLE_TAGS, KEY_NAME + "=?", new String[] {name});
-
-        if (cursor.moveToFirst()) {
-            do {
-                Tag tag = new Tag(
-                        Integer.parseInt(cursor.getString(0)),
-                        cursor.getString(1),
-                        Integer.parseInt(cursor.getString(2)));
-                changeIDTag(tag, tagIter);
-                tagIter++;
-
-            } while (cursor.moveToNext());
-        }
-
-        System.out.println("Count after delete");
-        System.out.println(getTagCount());
         db.close();
     }
 
@@ -166,8 +143,6 @@ public class TagDB extends SQLiteOpenHelper{
         refreshIndex();
     }
 
-
-    // Add new entry
     public void changeIDTag(Tag tag, int newId){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
