@@ -43,9 +43,7 @@ public class HabitRecord extends Model implements SQLiteRecord
     public static String SELECT =
         "select id, color, description, freq_den, freq_num, " +
         "name, position, reminder_hour, reminder_min, " +
-//        "highlight, archived, reminder_days from habits "; //possibly gonna crash
-//        "highlight, archived, reminder_days, tag_id, tagName from habits "; //possibly gonna crash
-        "highlight, archived, reminder_days, tag_id, tag_name, tag_color from habits "; //possibly gonna crash
+        "highlight, archived, reminder_days, tag_id, tag_name, tag_color from habits "; // Sometimes does not work with newer model phones
 
     @Column(name = "name")
     public String name;
@@ -83,13 +81,13 @@ public class HabitRecord extends Model implements SQLiteRecord
     @Column(name = "archived")
     public Integer archived;
 
-    @Column(name = "tag_id") //possibly gonna crash
+    @Column(name = "tag_id")
     public Integer tag_id;
 
-    @Column(name = "tag_name") //possibly gonna crash
+    @Column(name = "tag_name")
     public String tag_name;
 
-    @Column(name = "tag_color") //possibly gonna crash
+    @Column(name = "tag_color")
     public Integer tag_color;
 
 
