@@ -20,7 +20,10 @@ import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import org.isoron.uhabits.AppComponent;
+import org.isoron.uhabits.HabitsApplication;
 import org.isoron.uhabits.R;
+import org.isoron.uhabits.activities.BaseActivity;
 import org.isoron.uhabits.activities.common.dialogs.ColorPickerDialog;
 import org.isoron.uhabits.activities.common.dialogs.ColorPickerDialogFactory;
 import org.isoron.uhabits.models.Habit;
@@ -72,11 +75,17 @@ public class TagDialog extends AppCompatDialogFragment implements OnValueSelecte
     private ArrayAdapter<String> tagNamesAdapter;
     private Spinner tagSpinner;
 
+    private AppComponent appComponent;
+
+
+
     Habit modifiedHabit;
     ColorPickerDialogFactory colorPickerDialogFactory;
     Preferences prefs;
     BaseDialogHelper helper;
     int tagColor = 5;
+
+
 
     @Override
     public void onValueSelected(int pickerIndex, int newValue, boolean autoAdvance) {
@@ -89,22 +98,34 @@ public class TagDialog extends AppCompatDialogFragment implements OnValueSelecte
 
         View view = inflater.inflate(R.layout.tag_popup, null);
 
+//        helper = new BaseDialogHelper(this, view);
+
+        BaseActivity activity = (BaseActivity) getActivity();
+        colorPickerDialogFactory =
+                activity.getComponent().getColorPickerDialogFactory();
+
+        HabitsApplication app =
+                (HabitsApplication) getContext().getApplicationContext();
+        appComponent = app.getComponent();
+        prefs = appComponent.getPreferences();
+
         EditText tagMsg = (EditText) view.findViewById(R.id.tagName);
         Button saveBtn = (Button) view.findViewById(R.id.saveBtn);
         ImageButton imageButton = (ImageButton) view.findViewById(R.id.tagButtonPickColor);
 
         imageButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                int color = modifiedHabit.getColor();
+                int color = 0;
+//                int color = modifiedHabit.getColor();
                 ColorPickerDialog picker = colorPickerDialogFactory.create(color);
 
                 picker.setListener(c -> {
                     prefs.setDefaultHabitColor(c);
-                    modifiedHabit.setColor(c);
+//                    modifiedHabit.setColor(c);
                     tagColor = c;
 //                    modifiedHabit.getTag().setColor(c);
-                    helper.populateColor(c);
-                    System.out.println("Color chosen: " + modifiedHabit.getTag().getColor());
+//                    helper.populateColor(c);
+//                    System.out.println("Color chosen: " + modifiedHabit.getTag().getColor());
                 });
 
                 picker.show(getFragmentManager(), "picker");

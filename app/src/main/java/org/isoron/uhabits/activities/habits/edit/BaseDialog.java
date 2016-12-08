@@ -169,16 +169,10 @@ public abstract class BaseDialog extends AppCompatDialogFragment {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 1 /*tagNames.size() -1*/ && tagNames.size() != 1) { //if the 'add tag' is selected, do this
+                // save
+                modifiedHabit.setTag(tagDB.getTag(position + 1));
+                tagSelection = tagDB.getTag(position + 1).getId();
 
-//                    showTagEdit(tagDB, getActivity(), tagNames, tagNamesAdapter, tagSpinner, modifiedHabit, colorPickerDialogFactory, prefs, helper);
-                    showTagEdit(tagDB, getActivity(), modifiedHabit, colorPickerDialogFactory, prefs, helper);
-
-                } else {
-                    // save
-                    modifiedHabit.setTag(tagDB.getTag(position + 1));
-                    tagSelection = tagDB.getTag(position + 1).getId();
-                }
 
             }
 
@@ -215,9 +209,6 @@ public abstract class BaseDialog extends AppCompatDialogFragment {
 //        tagDialog.setColorPickerParams(modifiedHabit, colorPickerDialogFactory, prefs, helper);
 //        tagDialog.show(getFragmentManager(), "tagEdit");
 //    }
-
-
-
 
 
     public void pipeColorPicker(Habit modifiedHabit, ColorPickerDialogFactory colorPickerDialogFactory, Preferences prefs, BaseDialogHelper helper) {

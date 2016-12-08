@@ -177,7 +177,6 @@ abstract public class BaseActivity extends AppCompatActivity
 
         if (test.getTagCount() == 0) {
             test.addTag(new Tag(1, "No Tag", 1));
-            test.addTag(new Tag(2, "Add Tag", 2));
         }
 
     }

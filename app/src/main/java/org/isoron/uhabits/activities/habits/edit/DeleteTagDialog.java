@@ -96,6 +96,8 @@ public class DeleteTagDialog extends AppCompatDialogFragment {
                                                      }
                                                  }
 
+//                                                 tagDB.deleteTagAndRefresh(tagName);
+
                                                  for (int i = 0; i< habitList.size(); i++){
                                                      tempHabit = habitList.getByPosition(i);
                                                      if (tempHabit.getTag() != null) {
@@ -112,8 +114,8 @@ public class DeleteTagDialog extends AppCompatDialogFragment {
 //                                                     }
                                                  }
 
-
                                                  tagDB.deleteTagAndRefresh(tagName);
+
                                              }
                                              dismiss();
                                          }
