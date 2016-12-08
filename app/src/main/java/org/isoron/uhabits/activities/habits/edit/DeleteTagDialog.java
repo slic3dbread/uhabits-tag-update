@@ -44,7 +44,6 @@ public class DeleteTagDialog extends AppCompatDialogFragment {
     private HabitList habitList;
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -63,11 +62,8 @@ public class DeleteTagDialog extends AppCompatDialogFragment {
         habitList = appComponent.getHabitList();
 
 
-
-
-
-        for (int i = 0; i < tagDB.getTagCount(); i++) {
-            tagNames.add(i, tagDB.getTag(i + 1).getName());
+        for (int i = 0; i < tagDB.getTagCount()-1; i++) {
+            tagNames.add(i, tagDB.getTag(i + 2).getName());
         }
 
         tagNamesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, tagNames);
@@ -85,24 +81,27 @@ public class DeleteTagDialog extends AppCompatDialogFragment {
                                                  int tempPos = 0;
                                                  int tagTempPos = 0;
 
-                                                 for (int i = 0; i< habitList.size(); i++){
+                                                 tempPos = tagDB.getTagByName(tagName).getId();
+                                                 for (int i = 0; i < habitList.size(); i++) {
                                                      tempHabit = habitList.getByPosition(i);
+
                                                      if (tempHabit.getTag() != null) {
                                                          if (tempHabit.getTag().getName().equals(tagName)) {
+//                                                             tempPos = tempHabit.getTag().getId();
                                                              tempHabit.setTag(tagDB.getTag(1));
-                                                             tempPos = tempHabit.getTag().getId();
                                                              habitList.update(tempHabit);
                                                          }
                                                      }
                                                  }
+                                                     tagDB.deleteTagAndRefresh(tagName);
 
-                                                 tagDB.deleteTagAndRefresh(tagName);
-
-                                                 for (int i = 0; i< habitList.size(); i++){
+                                                 for (int i = 0; i < habitList.size(); i++) {
                                                      tempHabit = habitList.getByPosition(i);
                                                      if (tempHabit.getTag() != null) {
                                                          tagTempPos = tempHabit.getTag().getId();
                                                          if (tagTempPos > tempPos) {
+                                                             System.out.println(tagTempPos);
+                                                             System.out.println(tempPos);
                                                              tempHabit.setTag(tagDB.getTag(tagTempPos - 1));
                                                              habitList.update(tempHabit);
                                                          }
