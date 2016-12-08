@@ -173,7 +173,6 @@ public abstract class BaseDialog extends AppCompatDialogFragment {
                 modifiedHabit.setTag(tagDB.getTag(position + 1));
                 tagSelection = tagDB.getTag(position + 1).getId();
 
-
             }
 
             @Override
@@ -185,18 +184,18 @@ public abstract class BaseDialog extends AppCompatDialogFragment {
         return view;
     }
 
-    public void showTagEdit(TagDB tagdb, FragmentActivity activity, Habit modifiedHabit, ColorPickerDialogFactory colorPickerDialogFactory, Preferences prefs, BaseDialogHelper helper) {
-        TagDialog tagDialog = new TagDialog();
-        tagDialog.setTagDB(tagdb);
-
-//        tagDialog.setTagSpinner(tagSpinner);
-//        tagDialog.setTagNamesAdapter(tagNamesAdapter);
-        tagDialog.setFragmentActivity(activity);
-        tagDialog.setColorPickerParams(modifiedHabit, colorPickerDialogFactory, prefs, helper);
-
-
-        tagDialog.show(getFragmentManager(), "tagEdit");
-    }
+//    public void showTagEdit(TagDB tagdb, FragmentActivity activity, Habit modifiedHabit, ColorPickerDialogFactory colorPickerDialogFactory, Preferences prefs, BaseDialogHelper helper) {
+//        TagDialog tagDialog = new TagDialog();
+//        tagDialog.setTagDB(tagdb);
+//
+////        tagDialog.setTagSpinner(tagSpinner);
+////        tagDialog.setTagNamesAdapter(tagNamesAdapter);
+//        tagDialog.setFragmentActivity(activity);
+//        tagDialog.setColorPickerParams(modifiedHabit, colorPickerDialogFactory, prefs, helper);
+//
+//
+//        tagDialog.show(getFragmentManager(), "tagEdit");
+//    }
 
 //public void showTagEdit(TagDB tagdb, FragmentActivity activity, ArrayList<String> tagList, ArrayAdapter<String> tagNamesAdapter, Spinner tagSpinner, Habit modifiedHabit, ColorPickerDialogFactory colorPickerDialogFactory, Preferences prefs, BaseDialogHelper helper) {
 //        TagDialog tagDialog = new TagDialog();
