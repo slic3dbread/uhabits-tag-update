@@ -96,25 +96,19 @@ public class DeleteTagDialog extends AppCompatDialogFragment {
                                                      }
                                                  }
 
-//                                                 tagDB.deleteTagAndRefresh(tagName);
+                                                 tagDB.deleteTagAndRefresh(tagName);
 
                                                  for (int i = 0; i< habitList.size(); i++){
                                                      tempHabit = habitList.getByPosition(i);
                                                      if (tempHabit.getTag() != null) {
                                                          tagTempPos = tempHabit.getTag().getId();
-                                                         if (tagTempPos > tempPos && tempPos != 0) {
+                                                         if (tagTempPos > tempPos) {
                                                              tempHabit.setTag(tagDB.getTag(tagTempPos - 1));
                                                              habitList.update(tempHabit);
                                                          }
                                                      }
-
-//                                                     else if(tagTempPos==tempPos+1){
-//                                                         tempHabit.setTag(tagDB.getTag(tagTempPos - 2));
-//                                                         habitList.update(tempHabit);
-//                                                     }
                                                  }
 
-                                                 tagDB.deleteTagAndRefresh(tagName);
 
                                              }
                                              dismiss();
