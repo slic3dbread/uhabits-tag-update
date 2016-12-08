@@ -28,6 +28,7 @@ import com.activeandroid.annotation.*;
 import com.activeandroid.query.*;
 import com.activeandroid.util.*;
 
+import org.isoron.uhabits.activities.habits.edit.Tag;
 import org.isoron.uhabits.models.*;
 import org.isoron.uhabits.utils.DatabaseUtils;
 
@@ -42,7 +43,9 @@ public class HabitRecord extends Model implements SQLiteRecord
     public static String SELECT =
         "select id, color, description, freq_den, freq_num, " +
         "name, position, reminder_hour, reminder_min, " +
-        "highlight, archived, reminder_days from habits ";
+//        "highlight, archived, reminder_days from habits "; //possibly gonna crash
+//        "highlight, archived, reminder_days, tag_id, tagName from habits "; //possibly gonna crash
+        "highlight, archived, reminder_days, tag_id, tag_name, tag_color from habits "; //possibly gonna crash
 
     @Column(name = "name")
     public String name;
@@ -79,6 +82,16 @@ public class HabitRecord extends Model implements SQLiteRecord
 
     @Column(name = "archived")
     public Integer archived;
+
+    @Column(name = "tag_id") //possibly gonna crash
+    public Integer tag_id;
+
+    @Column(name = "tag_name") //possibly gonna crash
+    public String tag_name;
+
+    @Column(name = "tag_color") //possibly gonna crash
+    public Integer tag_color;
+
 
     public HabitRecord()
     {
@@ -150,6 +163,9 @@ public class HabitRecord extends Model implements SQLiteRecord
         this.reminderDays = 0;
         this.reminderMin = null;
         this.reminderHour = null;
+        this.tag_id = model.getTag().getId(); //possibly gonna crash
+        this.tag_name = model.getTag().getName(); //possibly gonna crash
+        this.tag_color = model.getTag().getColor(); //possibly gonna crash
 
         if (model.hasReminder())
         {
@@ -175,6 +191,9 @@ public class HabitRecord extends Model implements SQLiteRecord
         highlight = c.getInt(9);
         archived = c.getInt(10);
         reminderDays = c.getInt(11);
+        tag_id = c.getInt(12);
+        tag_name = c.getString(13);
+        tag_color = c.getInt(14);
     }
 
     public void copyTo(Habit habit)
@@ -185,6 +204,7 @@ public class HabitRecord extends Model implements SQLiteRecord
         habit.setColor(this.color);
         habit.setArchived(this.archived != 0);
         habit.setId(this.getId());
+        habit.setTag(new Tag(this.tag_id, this.tag_name, this.tag_color));
 
         if (reminderHour != null && reminderMin != null)
         {
