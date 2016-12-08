@@ -143,7 +143,7 @@ public class TagDB extends SQLiteOpenHelper{
         refreshIndex();
     }
 
-    public void changeIDTag(Tag tag, int newId){
+    protected void changeIDTag(Tag tag, int newId){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_ID, newId);

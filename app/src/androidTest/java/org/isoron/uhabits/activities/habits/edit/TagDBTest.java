@@ -97,24 +97,14 @@ public class TagDBTest extends BaseAndroidTest
     }
 
     @Test
-    public void testGetTagCount()
+    public void testGetTagByNameThatDoesNotExist()
     {
-        int count = tagDB.getTagCount();
-        assertEquals(3, count);
-    }
+        try {
+            Tag returnedTag = tagDB.getTagByName("This name does not exist");
+            fail("Exception was not thrown");
+        } catch(Exception e) {
 
-    @Test
-    public void testGetTagCountWhenDatabaseEmpty()
-    {
-        int count = tagDB.getTagCount();
-        assertEquals(3, count);
-
-        tagDB.deleteTag("This is the first tag");
-        tagDB.deleteTag("This is the second tag");
-        tagDB.deleteTag("This is the third tag");
-
-        count = tagDB.getTagCount();
-        assertEquals(0, count);
+        }
     }
 
     @Test
@@ -137,11 +127,69 @@ public class TagDBTest extends BaseAndroidTest
     }
 
     @Test
+    public void testGetAllTagsWhenDatabaseEmpty()
+    {
+        tagDB.deleteTag("This is the first tag");
+        tagDB.deleteTag("This is the second tag");
+        tagDB.deleteTag("This is the third tag");
+
+        List<Tag> returnedTags = tagDB.getAllTags();
+
+        assertEquals(0, returnedTags.size());
+    }
+
+    @Test
+    public void testGetAllTagsWhenDatabaseHasOneTag()
+    {
+        tagDB.deleteTag("This is the first tag");
+        tagDB.deleteTag("This is the second tag");
+
+        List<Tag> returnedTags = tagDB.getAllTags();
+
+        assertEquals(1, returnedTags.size());
+
+        Tag firstTag = returnedTags.get(0);
+
+        assertEquals(369, firstTag.getId());
+        assertEquals(3, firstTag.getColor());
+        assertEquals("This is the third tag", firstTag.getName());
+    }
+
+    @Test
+    public void testGetTagCount()
+    {
+        int count = tagDB.getTagCount();
+        assertEquals(3, count);
+    }
+
+    @Test
+    public void testGetTagCountWhenDatabaseEmpty()
+    {
+        int count = tagDB.getTagCount();
+        assertEquals(3, count);
+
+        tagDB.deleteTag("This is the first tag");
+        tagDB.deleteTag("This is the second tag");
+        tagDB.deleteTag("This is the third tag");
+
+        count = tagDB.getTagCount();
+        assertEquals(0, count);
+    }
+
+    @Test
     public void testDeleteTag()
     {
         assertEquals(3, tagDB.getTagCount());
         tagDB.deleteTag("This is the first tag");
         assertEquals(2, tagDB.getTagCount());
+    }
+
+    @Test
+    public void testDeleteTagThatDoesNotExist()
+    {
+        assertEquals(3, tagDB.getTagCount());
+        tagDB.deleteTag("This tag does not exist in the database");
+        assertEquals(3, tagDB.getTagCount());
     }
 
     @Test
@@ -169,6 +217,33 @@ public class TagDBTest extends BaseAndroidTest
     }
 
     @Test
+    public void testRefreshIndexWhenDatabaseEmpty()
+    {
+        tagDB.deleteTag("This is the first tag");
+        tagDB.deleteTag("This is the second tag");
+        tagDB.deleteTag("This is the third tag");
+
+        tagDB.refreshIndex();
+
+        assertEquals(0, tagDB.getTagCount());
+    }
+
+    @Test
+    public void testRefreshIndexWhenDatabaseHasOneTag()
+    {
+        tagDB.deleteTag("This is the first tag");
+        tagDB.deleteTag("This is the second tag");
+
+        tagDB.refreshIndex();
+
+        Tag returnedTag = tagDB.getTagByName("This is the third tag");
+
+        assertEquals(1, returnedTag.getId());
+        assertEquals(3, returnedTag.getColor());
+        assertEquals("This is the third tag", returnedTag.getName());
+    }
+
+    @Test
     public void testDeleteTagAndRefresh()
     {
         assertEquals(3, tagDB.getTagCount());
@@ -186,5 +261,27 @@ public class TagDBTest extends BaseAndroidTest
         assertEquals(1, returnedTag.getId());
         assertEquals(3, returnedTag.getColor());
         assertEquals("This is the third tag", returnedTag.getName());
+    }
+
+    @Test
+    public void testChangeIDTag()
+    {
+        tagDB.changeIDTag(testTag1, 2468 );
+
+        Tag returnedTag = tagDB.getTagByName("This is the first tag");
+
+        assertEquals(2468, returnedTag.getId());
+        assertEquals(1, returnedTag.getColor());
+        assertEquals("This is the first tag", returnedTag.getName());
+    }
+
+    @Test
+    public void testChangeIDTagOfTagThatDoesNotExist()
+    {
+        Tag newTag = new Tag(444, "Testing 1,2,3", 10);
+
+        tagDB.changeIDTag(newTag, 2468);
+
+        assertEquals(3, tagDB.getTagCount());
     }
 }
