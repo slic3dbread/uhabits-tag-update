@@ -19,8 +19,6 @@ public class TagDBTest extends BaseAndroidTest
     private TagDB tagDB;
 
     private Tag testTag1;
-    private Tag testTag2;
-    private Tag testTag3;
 
     @Before
     @Override
@@ -31,8 +29,8 @@ public class TagDBTest extends BaseAndroidTest
         tagDB = new TagDB(InstrumentationRegistry.getTargetContext(), "tag database test", null, 1);
 
         testTag1 = new Tag(12345, "This is the first tag", 1);
-        testTag2 = new Tag(67890, "This is the second tag", 2);
-        testTag3 = new Tag(369, "This is the third tag", 3);
+        Tag testTag2 = new Tag(67890, "This is the second tag", 2);
+        Tag testTag3 = new Tag(369, "This is the third tag", 3);
 
         tagDB.addTag(testTag1);
         tagDB.addTag(testTag2);

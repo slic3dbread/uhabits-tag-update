@@ -21,9 +21,6 @@ package org.isoron.uhabits.activities.habits.list;
 
 import android.content.*;
 import android.support.annotation.*;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatDialogFragment;
 
 import org.isoron.uhabits.*;
 import org.isoron.uhabits.activities.*;
@@ -72,7 +69,7 @@ public class ListHabitsScreen extends BaseScreen
     private final CreateHabitDialogFactory createHabitDialogFactory;
 
     @NonNull
-    private final CreateTagDialogFactory createTagDialogFactory;
+    private final CreateAddTagDialogFactory createAddTagDialogFactory;
 
     @NonNull
     private final CreateDeleteTagDialogFactory createDeleteTagDialogFactory;
@@ -103,7 +100,7 @@ public class ListHabitsScreen extends BaseScreen
                             @NonNull FilePickerDialogFactory filePickerDialogFactory,
                             @NonNull ColorPickerDialogFactory colorPickerFactory,
                             @NonNull EditHabitDialogFactory editHabitDialogFactory,
-                            @NonNull CreateTagDialogFactory createTagDialogFactory,
+                            @NonNull CreateAddTagDialogFactory createAddTagDialogFactory,
                             @NonNull CreateDeleteTagDialogFactory createDeleteTagDialogFactory)
     {
         super(activity);
@@ -117,7 +114,7 @@ public class ListHabitsScreen extends BaseScreen
         this.filePickerDialogFactory = filePickerDialogFactory;
         this.intentFactory = intentFactory;
         this.themeSwitcher = themeSwitcher;
-        this.createTagDialogFactory = createTagDialogFactory;
+        this.createAddTagDialogFactory = createAddTagDialogFactory;
         this.createDeleteTagDialogFactory = createDeleteTagDialogFactory; }
 
     public void onAttached()
@@ -257,11 +254,7 @@ public class ListHabitsScreen extends BaseScreen
     }
 
     public void openAddTagDialog(){
-//        activity.showDialog(createHabitDialogFactory.create(), "addTag");
-        activity.showDialog(createTagDialogFactory.create(), "addTag");
-//        new TagDialog(, "testDB");
-//        new TagDialog().showTagEdit(tagDB, getActivity(), modifiedHabit, colorPickerDialogFactory, prefs, helper);
-//        showTagEdit(tagDB,  getActivity(), modifiedHabit);
+        activity.showDialog(createAddTagDialogFactory.create(), "addTag");
     }
 
     public void openRemoveTagDialog(){
